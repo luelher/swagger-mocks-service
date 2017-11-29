@@ -1,0 +1,14 @@
+# dotenv environment variables file
+.env
+# Optional npm cache directory
+.npm
+# Dependency directories
+node_modules/
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+build/Release
+
+# Logs
+logs
+*.log
+npm-debug.log*
