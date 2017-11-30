@@ -4,7 +4,7 @@ let request = require('request');
 let utf8 = require('utf8');
 let app = express();
 
-const PORT = process.env.NODE_SERVER_PORT || 3000
+const PORT = process.env.PORT || 3000
 const INTEROPERABILITY_SERVER_URI = process.env.INTEROPERABILITY_SERVER_URI || 'http://devel.interoperabilidad.digital.gob.cl'
 const RESPONSES_CODES = {'get': 200, 'post': 201, 'delete': 200, 'put': 200}
 
