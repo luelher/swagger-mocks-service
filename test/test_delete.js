@@ -6,8 +6,8 @@ const INTEROPERABILITY_SERVER_URI = process.env.INTEROPERABILITY_SERVER_URI || '
 
 describe('mocking DELETE method request', () => {
   let server;
-  let testComplexPath = "/DummyInstitution/dummy_service/99/personas/111";
-  let testComplexBadPath = "/DummyInstitution/dummy_service/99/people/111";
+  let testComplexPath = "/organizations/DummyInstitution/services/dummy_service/versions/99/personas/111";
+  let testComplexBadPath = "/organizations/DummyInstitution/services/dummy_service/versions/99/people/111";
 
   beforeEach(function () {
     server = require('../index.js');

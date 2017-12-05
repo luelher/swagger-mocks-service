@@ -6,8 +6,8 @@ const INTEROPERABILITY_SERVER_URI = process.env.INTEROPERABILITY_SERVER_URI || '
 
 describe('mocking GET method request', () => {
   let server;
-  let testSimplePath = "/DummyInstitution/dummy_service/99/hello";
-  let testSimpleBadPath = "/DummyInstitution/dummy_service/99/hola";
+  let testSimplePath = "/organizations/DummyInstitution/services/dummy_service/versions/99/hello";
+  let testSimpleBadPath = "/organizations/DummyInstitution/services/dummy_service/versions/99/hola";
 
   beforeEach(function () {
     server = require('../index.js');

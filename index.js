@@ -12,7 +12,7 @@ app.get('/', function (req, res) {
   res.send("Swagger Mock Service for Interoperability platform");
 })
 
-app.all('/:institution/:service/:version/*', function (req, res) {
+app.all('/organizations/:institution/services/:service/versions/:version/*', function (req, res) {
 
   let resourcePath = '/'+req.params[0];
   let institution = req.params.institution;
@@ -22,7 +22,6 @@ app.all('/:institution/:service/:version/*', function (req, res) {
   swaggerPath = utf8.encode(swaggerPath);
   let mockgen = Swagmock(swaggerPath);
   var method = req.method.toLowerCase();
-  // console.log(method+" "+resourcePath);
 
   mockgen.responses({
     path: resourcePath
