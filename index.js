@@ -12,67 +12,74 @@ app.get('/', function (req, res) {
   res.send("Swagger Mock Service for Interoperability platform");
 })
 
-app.all('/organizations/:institution/services/:service/versions/:version/*', function (req, res) {
+app.all('/:auth_type/organizations/:institution/services/:service/versions/:version/*', function (req, res) {
 
   let resourcePath = '/'+req.params[0];
   let institution = req.params.institution;
   let service = req.params.service;
   let version = req.params.version;
+  let auth_type = req.params.auth_type;
   let swaggerPath = INTEROPERABILITY_SERVER_URI+'/organizations/'+institution+'/services/'+service+'/versions/'+version+'.json';
   swaggerPath = utf8.encode(swaggerPath);
   let mockgen = Swagmock(swaggerPath);
   var method = req.method.toLowerCase();
 
-  mockgen.responses({
-    path: resourcePath
-  }, function (error, mock) {
+  if(typeof req.get("Autentication") == 'undefined' && auth_type=='private'){
+    res.status(401).send({error: "unauthorized"});
+  }else{
 
-    if(error == null){
-      let url_splited = resourcePath.split('/');
-      let last_item = url_splited.pop();
-      let url_have_id = !isNaN(last_item)
-      let resource;
-      let keys = Object.keys(mock);
-      let key_resourse;
-      if(url_have_id){
-        resource = '/'+url_splited.pop()+'/';
-      }else{
-        resource = '/'+last_item;
-      }
+    mockgen.responses({
+      path: resourcePath
+    }, function (error, mock) {
 
-      key_resourse = keys.find(function(item){return item.includes(resource)});
-      let str_error = "Response schema for this resource is not defined in swagger file";
-
-      // debugger;
-      if(typeof key_resourse == 'undefined' && keys.indexOf(this.method) > -1){
-        if(typeof mock[this.method] == 'undefined'){
-          res.status(404).send({error: str_error});
-        }else if(typeof mock[this.method]["responses"] == 'undefined'){
-          res.status(404).send({error: str_error});
-        }else if (typeof mock[this.method]["responses"][this.code] == 'undefined'){
-          res.status(404).send({error: str_error});
+      if(error == null){
+        let url_splited = resourcePath.split('/');
+        let last_item = url_splited.pop();
+        let url_have_id = !isNaN(last_item)
+        let resource;
+        let keys = Object.keys(mock);
+        let key_resourse;
+        if(url_have_id){
+          resource = '/'+url_splited.pop()+'/';
         }else{
-          res.send(mock[this.method]["responses"][this.code]);
-        } 
-      }else{
-        if(typeof mock[key_resourse] == 'undefined'){
-          res.status(404).send({error: str_error});
-        }else if(typeof mock[key_resourse][this.method] == 'undefined'){
-          res.status(404).send({error: str_error});
-        }else if(typeof mock[key_resourse][this.method]["responses"] == 'undefined'){
-          res.status(404).send({error: str_error});
-        }else if (typeof mock[key_resourse][this.method]["responses"][this.code] == 'undefined'){
-          res.status(404).send({error: str_error});
-        }else{
-          res.send(mock[key_resourse][this.method]["responses"][this.code]);
-        } 
-      }
+          resource = '/'+last_item;
+        }
 
-    }else{
-      res.status(500).send({error: error['message']});
-    }
-    
-  }.bind({method: method, code: RESPONSES_CODES[method]}));
+        key_resourse = keys.find(function(item){return item.includes(resource)});
+        let str_error = "Response schema for this resource is not defined in swagger file";
+
+        // debugger;
+        if(typeof key_resourse == 'undefined' && keys.indexOf(this.method) > -1){
+          if(typeof mock[this.method] == 'undefined'){
+            res.status(404).send({error: str_error});
+          }else if(typeof mock[this.method]["responses"] == 'undefined'){
+            res.status(404).send({error: str_error});
+          }else if (typeof mock[this.method]["responses"][this.code] == 'undefined'){
+            res.status(404).send({error: str_error});
+          }else{
+            res.send(mock[this.method]["responses"][this.code]);
+          } 
+        }else{
+          if(typeof mock[key_resourse] == 'undefined'){
+            res.status(404).send({error: str_error});
+          }else if(typeof mock[key_resourse][this.method] == 'undefined'){
+            res.status(404).send({error: str_error});
+          }else if(typeof mock[key_resourse][this.method]["responses"] == 'undefined'){
+            res.status(404).send({error: str_error});
+          }else if (typeof mock[key_resourse][this.method]["responses"][this.code] == 'undefined'){
+            res.status(404).send({error: str_error});
+          }else{
+            res.send(mock[key_resourse][this.method]["responses"][this.code]);
+          } 
+        }
+
+      }else{
+        res.status(500).send({error: error['message']});
+      }
+      
+    }.bind({method: method, code: RESPONSES_CODES[method]}));
+
+  }
   
 });
 
